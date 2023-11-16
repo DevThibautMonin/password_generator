@@ -29,9 +29,10 @@ class _PasswordGeneratorScreenState extends State<PasswordGeneratorScreen> {
               },
               child: const Text("Generate")),
           SizedBox(
-            width: 200,
+            width: 300,
             child: TextField(
               controller: passwordController,
+              readOnly: true,
               decoration: InputDecoration(
                   suffixIcon: GestureDetector(
                       onTap: () {
@@ -44,18 +45,20 @@ class _PasswordGeneratorScreenState extends State<PasswordGeneratorScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text("Password length"),
+              Text("Password length (${passwordLength.toInt()})"),
               SizedBox(
                 width: 200,
                 child: Slider(
                     label: passwordLength.toString(),
                     min: 0,
                     max: 24,
+                    divisions: 24,
                     value: passwordLength,
                     onChanged: (value) {
                       setState(() {
                         passwordLength = value.roundToDouble();
                       });
+                      _generatePassword(passwordLength.toInt());
                     }),
               )
             ],
@@ -73,6 +76,7 @@ class _PasswordGeneratorScreenState extends State<PasswordGeneratorScreen> {
                         setState(() {
                           specialCharacters = switchValue;
                         });
+                        _generatePassword(passwordLength.toInt());
                       }))
             ],
           ),
@@ -81,8 +85,19 @@ class _PasswordGeneratorScreenState extends State<PasswordGeneratorScreen> {
     );
   }
 
-  void _generatePassword(int passwordLength) {
-    passwordController.text = Random().nextInt(500000000).toString();
+  void _generatePassword(int length) {
+    var charset =
+        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    if (specialCharacters) {
+      charset += '!@#\$%^&*()_+';
+    }
+
+    final random = Random.secure();
+    final password =
+        List.generate(length, (_) => charset[random.nextInt(charset.length)])
+            .join();
+
+    passwordController.text = password;
   }
 
   void _copyToClipboard() async {
