@@ -89,7 +89,7 @@ class _PasswordGeneratorScreenState extends State<PasswordGeneratorScreen> {
     var charset =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     if (specialCharacters) {
-      charset += '!@#\$%^&*()_+';
+      charset += '!@#\$%^&*()_+°¨£;?ç€';
     }
 
     final random = Random.secure();
